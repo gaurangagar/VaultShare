@@ -1,0 +1,29 @@
+{
+  "name": "vaultshare",
+  "version": "1.0.0",
+  "description": "a secure file storage and sharing backend with JWT-based user authentication, upload/download features, expiring shareable links, and full audit logging mimicking the backend of Google Drive architecture",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gaurangagar/VaultShare.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gaurangagar/VaultShare/issues"
+  },
+  "homepage": "https://github.com/gaurangagar/VaultShare#readme",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.15.1",
+    "multer": "^2.0.0",
+    "nodemon": "^3.1.10"
+  }
+}
