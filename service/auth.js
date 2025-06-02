@@ -1,5 +1,5 @@
 const jwt=require('jsonwebtoken')
-const secret = process.env.JWT_SECRET;
+const { jwtSecret } = require('../config/env');
 
 function setUser(user) {
     return jwt.sign(
@@ -8,14 +8,14 @@ function setUser(user) {
             name:user.name,
             email: user.email,
         },
-        secret
+        jwtSecret
     );
 }
 
 function getUser(token) {
     if (!token) return null;
     try {
-        return jwt.verify(token, secret);
+        return jwt.verify(token, jwtSecret);
     } catch (error) {
         return null;
     }
