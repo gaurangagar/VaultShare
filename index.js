@@ -10,6 +10,7 @@ connectDB();
 
 const AuthRoutes=require('./routes/auth.routes')
 const FileRoutes=require('./routes/files.routes')
+const ShareRoutes=require('./routes/share.routes')
 
 app.use(express.json());
 app.use(cookieParser());
@@ -26,3 +27,4 @@ app.listen(port, () => {
 
 app.use('/auth',AuthRoutes)
 app.use('/file',FileRoutes)
+app.use('/share',ShareRoutes)
