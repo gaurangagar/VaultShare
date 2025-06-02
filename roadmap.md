@@ -5,7 +5,7 @@ a secure file storage and sharing backend with JWT-based user authentication, up
 
 A backend-only project that mimics the core functionality of Google Drive’s backend.  
 Users can upload files, manage them, and share files securely via expiring links with download limits.  
-Built with Node.js, Express, MongoDB, JWT, and Multer.
+Built with Node.js, Express, MongoDB, JWT, cloudinary and Multer.
 
 ---
 
@@ -60,7 +60,8 @@ Built with Node.js, Express, MongoDB, JWT, and Multer.
 ## 🧰 Tech Stack
 - Node.js + Express.js  
 - MongoDB + Mongoose  
-- Multer (file uploads)  
+- Multer (file uploads)
+- Cloudinary (for cloud media management)  
 - JSON Web Tokens (JWT) + bcrypt (authentication)  
 - express-rate-limit (optional for throttling)  
 - nodemailer (optional for email notifications)  
