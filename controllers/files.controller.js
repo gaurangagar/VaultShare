@@ -1,11 +1,13 @@
 const { v4: uuidv4 } = require('uuid');
 const File = require('../models/file');
+const Audit=require('../models/audit')
 const cloudinary = require('../config/cloudinary');
 
 async function handleFileUpload(req, res) {
   try {
+    
     const file = req.file;
-    console.log('file', file);
+    //console.log('file', file);
 
     // Convert buffer to base64 and prepend Data URI scheme
     const base64 = file.buffer.toString('base64');
@@ -14,7 +16,7 @@ async function handleFileUpload(req, res) {
     const result = await cloudinary.uploader.upload(dataURI, {
       resource_type: 'raw',
     });
-    console.log('result', result);
+    //console.log('result', result);
     const uploadedFile = await File.create({
       originalName: file.originalname,
       secureUrl: result.secure_url,
@@ -22,7 +24,14 @@ async function handleFileUpload(req, res) {
       createdBy: req.user._id,
       public_id: result.public_id,
     });
-    console.log(uploadedFile);
+    //console.log(uploadedFile);
+    await Audit.create({
+      user:req.user._id,
+      file:uploadedFile._id,
+      action:'upload',
+      ipAddress:req.ip,
+      userAgent:req.get('User-Agent'),
+    })
     res.status(200).json({ url: result.secure_url, info: result });
   } catch (err) {
     console.error(err);
@@ -49,8 +58,16 @@ async function handleFileDownload(req, res) {
     const file = await File.findById(fileid);
     if (!file) return res.status(404).json({ error: 'no file found' });
     if (file.createdBy != req.user._id) return res.status(401).json({ error: 'this is not your file' });
+    await Audit.create({
+      user:req.user._id,
+      file:fileid,
+      action:'download',
+      ipAddress:req.ip,
+      userAgent:req.get('User-Agent'),
+    })
     res.redirect(file.secureUrl);
-  } catch {
+  } catch(error){
+    console.error('File download error:', error);
     res.status(500).json({ message: 'file download error' });
   }
 }
@@ -71,6 +88,13 @@ async function handleFileDelete(req, res) {
       resource_type: 'raw',
     });
     console.log(result);
+    await Audit.create({
+      user:req.user._id,
+      file:fileid,
+      action:'delete',
+      ipAddress:req.ip,
+      userAgent:req.get('User-Agent'),
+    })
     res.status(200).json({ success: true, message: 'File deleted', cloudinaryResult: result });
   } catch (error) {
     console.error('Error deleting file:', error);
@@ -91,7 +115,14 @@ async function handleFileShare(req, res) {
     file.shareToken = token;
     file.expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
     await file.save();
-
+    await Audit.create({
+      user:req.user._id,
+      file:fileid,
+      action:'generate_token',
+      ipAddress:req.ip,
+      userAgent:req.get('User-Agent'),
+      shareToken:token
+    })
     res.status(200).json({ success: true, message: 'token generated', token });
   } catch (error) {
     console.error('Error generated token:', error);
